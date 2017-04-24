@@ -10,7 +10,6 @@ int Max=401;
 int Min=395;
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
   //while (!Serial) {
   //  ; // wait for serial port to connect. Needed for native USB port only
@@ -29,25 +28,7 @@ void setup() {
   Serial.println(Max);
 }
 
-char Protocol(struct data_types stData){
-  String data;
-  data += 'P'; //effekt
-  data += stData.Effect;
-  data += 'H'; //effekt timer
-  data += stData.Effect_Hour;
-  data += 'V';
-  data += stData.Voltage;
-  data += 'A';
-  data += stData.Ampere;
-  data += 'T';
-  data += stData.Time_Stamp;
-  //Serial.println(data.length()+1);
-  char cData[data.length()+1];
-  data.toCharArray(cData,data.length()+1);
-  Serial.println(cData);
-}
-
-typedef struct data_types {
+struct data_types {
   //Effect in watt
   unsigned long Effect;
   //Effect in watt hours
@@ -83,7 +64,52 @@ struct data_types emulator(int sim, int sample) {
   }
 }
 
+char *Protocol(struct data_types stData){
+  int lngth;
+  String data;
+  char *cData;
+  data += 'P'; //effekt
+  data += stData.Effect;
+  data += 'H'; //effekt timer
+  data += stData.Effect_Hour;
+  data += 'V';
+  data += stData.Voltage;
+  data += 'A';
+  data += stData.Ampere;
+  data += 'T';
+  data += stData.Time_Stamp;
+  //Serial.println(data.length()+1);
+  cData=new char[data.length()+1];
+  data.toCharArray(cData,data.length()+1);
+  Serial.println(cData);
+  lngth = sizeof(cData);
+  return cData;
+}
+
+struct data_types SetTemp(struct data_types stData){
+  stData.Effect = 33;
+  stData.Effect_Hour = 44;
+  stData.Voltage = 432;
+  stData.Ampere = 21;
+  stData.Time_Stamp = 54;
+  return stData;
+}
+
+int Lngth(struct data_types stData){
+  int lgt=0;
+  lgt += sizeof(stData.Effect)+1;
+  lgt += sizeof(stData.Effect_Hour)+1;
+  lgt += sizeof(stData.Voltage)+1;
+  lgt += sizeof(stData.Ampere)+1;
+  lgt += sizeof(stData.Time_Stamp)+1;
+  return lgt;  
+}
+
 void loop() {
-  // put your main code here, to run repeatedly:
-  emu_data = emulator(Sim_Speed, Sample_Speed);
+  emu_data = SetTemp(emu_data);
+  char *data;
+  data = new char[Lngth(emu_data)+1];
+  data = Protocol(emu_data);
+  Serial.println(data);
+  delay(1000);
 }
