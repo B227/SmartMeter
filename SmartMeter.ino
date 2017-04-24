@@ -29,15 +29,25 @@ void setup() {
   Serial.println(Max);
 }
 
-char Protocol(){
-  Serial.println(lan);
-  Serial.println(lan.length()+1);
-  char a[lan.length()+1];
-  lan.toCharArray(a,lan.length()+1);
-  Serial.println(a);
+char Protocol(struct data_types stData){
+  String data;
+  data += 'P'; //effekt
+  data += stData.Effect;
+  data += 'H'; //effekt timer
+  data += stData.Effect_Hour;
+  data += 'V';
+  data += stData.Voltage;
+  data += 'A';
+  data += stData.Ampere;
+  data += 'T';
+  data += stData.Time_Stamp;
+  //Serial.println(data.length()+1);
+  char cData[data.length()+1];
+  data.toCharArray(cData,data.length()+1);
+  Serial.println(cData);
 }
 
-struct data_types {
+typedef struct data_types {
   //Effect in watt
   unsigned long Effect;
   //Effect in watt hours
