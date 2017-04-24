@@ -78,11 +78,8 @@ char *Protocol(struct data_types stData){
   data += stData.Ampere;
   data += 'T';
   data += stData.Time_Stamp;
-  //Serial.println(data.length()+1);
   cData=new char[data.length()+1];
   data.toCharArray(cData,data.length()+1);
-  Serial.println(cData);
-  lngth = sizeof(cData);
   return cData;
 }
 
