@@ -29,6 +29,14 @@ void setup() {
   Serial.println(Max);
 }
 
+char Protocol(){
+  Serial.println(lan);
+  Serial.println(lan.length()+1);
+  char a[lan.length()+1];
+  lan.toCharArray(a,lan.length()+1);
+  Serial.println(a);
+}
+
 struct data_types {
   //Effect in watt
   unsigned long Effect;
