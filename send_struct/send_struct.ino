@@ -30,22 +30,22 @@ RF24Mesh mesh(radio, network);
  * This will be stored in EEPROM on AVR devices, so remains persistent between further uploads, loss of power, etc.
  *
  **/
-#define nodeID 8
+#define nodeID 1
 
 
 uint32_t displayTimer = 0;
 
 struct data_types {
   //Effect in watt
-  unsigned long Effect;
+  uint32_t Effect;
   //Effect in watt hours
-  unsigned long Effect_Hour;
+  uint32_t Effect_Hour;
   //Voltage in milli volt
-  unsigned long Voltage;
+  uint32_t Voltage;
   //Amp in amp
-  unsigned long Ampere;
+  uint32_t Ampere;
   //Time in ms
-  unsigned long Time_Stamp;
+  uint32_t Time_Stamp;
 };
 data_types emu_data;
 
@@ -63,6 +63,7 @@ void setup() {
   // Connect to the mesh
   Serial.println(F("Connecting to the mesh..."));
   mesh.begin();
+  emu_data = SetTemp(emu_data);
 }
 
 struct data_types SetTemp(struct data_types stData){
@@ -75,7 +76,7 @@ struct data_types SetTemp(struct data_types stData){
 }
 
 void loop() {
-emu_data = SetTemp(emu_data);
+
   mesh.update();
 
   // Send to the master node every second
