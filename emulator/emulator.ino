@@ -20,7 +20,7 @@ void setup() {
   Serial.begin(9600);
 
   //Random seed for true random
-  //randomSeed(analogRead(0));
+  randomSeed(analogRead(0));
 
   Serial.print("Sample rate at: ");
   Serial.println(Sample_Speed);
@@ -76,7 +76,7 @@ struct data_types emulator(int sim, int sample) {
     //Serial.println(volt_temp/10,1);
 
     //12 hours cycle
-    temp.Ampere = ((sin(((temp.Time_Stamp) * 3.14159) / 21600) * ((Max - Min) / 2)) + ((Max + Min) / 2)) * 1000;
+    temp.Ampere = (((sin(((temp.Time_Stamp) * 3.14159) / 21600) * ((Max - Min) / 2)) + ((Max + Min) / 2)) * 1000)+(random(0,100)/100);
 //Serial.println(temp.Ampere);
     amp_temp=temp.Ampere;
     //1000 times bigger
