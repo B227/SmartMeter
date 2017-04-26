@@ -65,7 +65,7 @@ struct data_types emulator(int sim, int sample) {
 }
 
 char *Protocol(struct data_types stData){
-  int lngth;
+  //int lngth;
   String data;
   char *cData;
   data += 'P'; //effekt
