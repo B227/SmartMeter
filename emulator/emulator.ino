@@ -47,15 +47,15 @@ struct data_types {
 
 struct data_int {
   //Effect in watt
-  int Effect;
+  uint32_t Effect;
   //Effect in watt hours
-  int Effect_Hour;
+  uint32_t Effect_Hour;
   //Voltage in milli volt
-  int Voltage;
+  uint32_t Voltage;
   //Amp in amp
-  int Ampere;
+  uint32_t Ampere;
   //Time in ms
-  int Time_Stamp;
+  uint32_t Time_Stamp;
 };
 data_int emu_int;
 
@@ -101,7 +101,7 @@ Serial.println(temp_int.Ampere);
 
     //effects
     temp.Effect = (amp_temp * volt_temp) * 5;
-    temp_int.Effect = temp.Effect/100;
+    temp_int.Effect = temp.Effect/10000;
 Serial.println(temp_int.Effect);    
     temp.Effect_Hour = (temp.Effect / ((3600) / sample)); 
     temp_int.Effect_Hour = temp.Effect_Hour/100;
