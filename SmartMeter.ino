@@ -39,6 +39,8 @@ struct data_types {
   uint16_t Ampere;
   //Time in ms
   uint16_t Time_Stamp;
+  // ID
+  uint8_t ID = nodeID;
 };
 data_types emu_data;
 
