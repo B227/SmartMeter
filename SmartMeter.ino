@@ -39,15 +39,15 @@ char Protocol(){
 
 struct data_types {
   //Effect in watt
-  unsigned long Effect;
+  int Effect;
   //Effect in watt hours
-  unsigned long Effect_Hour;
+  int Effect_Hour;
   //Voltage in milli volt
-  unsigned long Voltage;
+  int Voltage;
   //Amp in amp
-  unsigned long Ampere;
+  int Ampere;
   //Time in ms
-  unsigned long Time_Stamp;
+  int Time_Stamp;
 };
 data_types emu_data;
 
