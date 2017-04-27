@@ -6638,7 +6638,7 @@ const int PROGMEM volt_array[]={
  3985 ,
  3988 ,
  3983 ,
- 3977 ,
+ 3977};/* ,
  3983 ,
  3991 ,
  3995 ,
@@ -8640,4 +8640,4 @@ const int PROGMEM volt_array[]={
  3960 ,
  3959 ,
 };
-
+*/

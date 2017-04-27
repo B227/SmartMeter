@@ -5,6 +5,7 @@
 #include "RF24Mesh.h"
 #include <SPI.h>
 #include <EEPROM.h>
+#include <printf.h>
 
 #define nodeID 1
 
@@ -50,7 +51,8 @@ struct payload_t {
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-
+  printf_begin();
+  Serial.print(radio.setDataRate(RF24_2MBPS));
   //Random seed for true random
   randomSeed(analogRead(0));
   // Set the nodeID manually
@@ -67,6 +69,7 @@ void setup() {
   Serial.println(Min);
   Serial.print("Maximum at: ");
   Serial.println(Max);
+  radio.printDetails();
 }
 
 
@@ -75,7 +78,8 @@ struct data_types emulator(unsigned long time) {
   float volt_temp;
   float amp_temp;
   float effect_temp;
-  if (index == 8640) {
+  if (index == 6640) {
+    //8640
     index = 0;
   }
 
