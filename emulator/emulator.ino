@@ -34,19 +34,6 @@ void setup() {
 
 struct data_types {
   //Effect in watt
-  unsigned long Effect;
-  //Effect in watt hours
-  unsigned long Effect_Hour;
-  //Voltage in milli volt
-  unsigned long Voltage;
-  //Amp in amp
-  unsigned long Ampere;
-  //Time in ms
-  unsigned long Time_Stamp;
-};
-
-struct data_int {
-  //Effect in watt
   uint32_t Effect;
   //Effect in watt hours
   uint32_t Effect_Hour;
@@ -57,9 +44,9 @@ struct data_int {
   //Time in ms
   uint32_t Time_Stamp;
 };
-data_int emu_int;
+data_types emu_data;
 
-struct data_int emulator(int sim, int sample) {
+struct data_types emulator(int sim, int sample) {
   float volt_temp;
   float amp_temp;
   float effect_temp;
@@ -70,57 +57,50 @@ struct data_int emulator(int sim, int sample) {
     //for calcs
     data_types temp;
     //for database comp
-    data_int temp_int;
     
     //real life time stamps not affected by sim speed
     Serial.print("Sample at: ");
     Serial.println(time / 1000);
     
     //save time
-    temp.Time_Stamp = (time * sim);
-    temp_int.Time_Stamp = temp.Time_Stamp/1000;
-Serial.println(temp_int.Time_Stamp);
+    temp.Time_Stamp = (time * sim)/1000;
+
 
     //12 hours cycle
     temp.Voltage = pgm_read_word_near(volt_array + index);
-    temp_int.Voltage = temp.Voltage;
     
-Serial.println(temp_int.Voltage);
+//Serial.println(temp.Voltage);
     index++;
     volt_temp=temp.Voltage;
     //10 times bigger
     //Serial.println(volt_temp/10,1);
 
     //12 hours cycle
-    temp.Ampere = ((sin(((temp.Time_Stamp / 1000) * 3.14159) / 21600) * ((Max - Min) / 2)) + ((Max + Min) / 2)) * 1000;
-    temp_int.Ampere = temp.Ampere/100;
-Serial.println(temp_int.Ampere);
+    temp.Ampere = ((sin(((temp.Time_Stamp) * 3.14159) / 21600) * ((Max - Min) / 2)) + ((Max + Min) / 2)) * 1000;
+//Serial.println(temp.Ampere);
     amp_temp=temp.Ampere;
     //1000 times bigger
     //Serial.println(amp_temp/1000,3);
 
     //effects
-    temp.Effect = (amp_temp * volt_temp) * 5;
-    temp_int.Effect = temp.Effect/10000;
-Serial.println(temp_int.Effect);    
+    temp.Effect = ((amp_temp * volt_temp) * 5);
+//Serial.println(temp.Effect);    
     temp.Effect_Hour = (temp.Effect / ((3600) / sample)); 
-    temp_int.Effect_Hour = temp.Effect_Hour/100;
-Serial.println(temp_int.Effect_Hour); 
+//Serial.println(temp.Effect_Hour); 
     //10000 bigger than what it really is
-    effect_temp = temp.Effect;
-    effect_temp = (effect_temp / ((3600) / sample)) / 10000;
+    effect_temp = temp.Effect_Hour;
 
     //info print
     Serial.print("Emulated effect: ");
-    Serial.print(effect_temp, 3);
+    Serial.print(effect_temp/10000, 3);
     Serial.print(" Wh at :");
-    Serial.println(temp.Time_Stamp / 1000);
+    Serial.println(temp.Time_Stamp);
     time = millis();
-    return temp_int;
+    return temp;
   }
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  emu_int = emulator(Sim_Speed, Sample_Speed);
+  emu_data = emulator(Sim_Speed, Sample_Speed);
 }
