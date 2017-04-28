@@ -41,6 +41,8 @@ struct data_types {
   uint16_t Time_Stamp;
   //Smart Meter ID
   uint8_t ID = nodeID;
+  //Safty check
+  uint8_t check = 29;
 };
 data_types emu_data;
 
