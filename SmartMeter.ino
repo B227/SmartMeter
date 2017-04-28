@@ -46,10 +46,10 @@ struct data_types {
 };
 data_types emu_data;
 
-struct payload_t {
+/*struct payload_t {
   unsigned long ms;
   unsigned long counter;
-};
+};*/
 
 void setup() {
   // put your setup code here, to run once:
@@ -60,10 +60,10 @@ void setup() {
   // Set the nodeID manually
   mesh.setNodeID(nodeID);
   // Connect to the mesh
-  Serial.println(F("Connecting to the mesh..."));
+  //Serial.println(F("Connecting to the mesh..."));
   mesh.begin();
 
-  Serial.print("Sample rate at: ");
+  /*Serial.print("Sample rate at: ");
   Serial.println(Sample_Speed);
   Serial.print("Simulator speed at: ");
   Serial.println(Sim_Speed);
@@ -71,6 +71,7 @@ void setup() {
   Serial.println(Min);
   Serial.print("Maximum at: ");
   Serial.println(Max);
+*/
 }
 
 
@@ -83,48 +84,48 @@ struct data_types emulator(unsigned long time) {
     index = 0;
   }
 
-    //for calcs
-    data_types temp;
-    //for database comp
+  //for calcs
+  data_types temp;
+  //for database comp
 
-    //real life time stamps not affected by sim speed
-    Serial.print("Sample at: ");
-    Serial.println(time / 1000);
+  //real life time stamps not affected by sim speed
+  //Serial.print("Sample at: ");
+  //Serial.println(time / 1000);
 
-    //save time
-    temp.Time_Stamp = (time * Sim_Speed)/1000;
+  //save time
+  temp.Time_Stamp = (time * Sim_Speed) / 1000;
 
 
-    //12 hours cycle
-    temp.Voltage = pgm_read_word_near(volt_array + index);
+  //12 hours cycle
+  temp.Voltage = pgm_read_word_near(volt_array + index);
 
-//Serial.println(temp.Voltage);
-    index++;
-    volt_temp=temp.Voltage;
-    //10 times bigger
-    //Serial.println(volt_temp/10,1);
+  //Serial.println(temp.Voltage);
+  index++;
+  volt_temp = temp.Voltage;
+  //10 times bigger
+  //Serial.println(volt_temp/10,1);
 
-    //12 hours cycle
-    temp.Ampere = (((sin(((temp.Time_Stamp) * 3.14159) / 21600) * ((Max - Min) / 2)) + ((Max + Min) / 2)) * 1000);//+random(0,500);
-//Serial.println(temp.Ampere);
-    amp_temp=temp.Ampere;
-    //1000 times bigger
+  //12 hours cycle
+  temp.Ampere = (((sin(((temp.Time_Stamp) * 3.14159) / 21600) * ((Max - Min) / 2)) + ((Max + Min) / 2)) * 1000);//+random(0,500);
+  //Serial.println(temp.Ampere);
+  amp_temp = temp.Ampere;
+  //1000 times bigger
 
-    //effects
-    temp.Effect = ((amp_temp * volt_temp) * 5)/10000;
-//Serial.println(temp.Effect);
-    temp.Effect_Hour = (temp.Effect / ((3.6) / Sample_Speed));
-//Serial.println(temp.Effect_Hour);
-    //1000 bigger than what it really is
-    effect_temp = temp.Effect_Hour;
+  //effects
+  temp.Effect = ((amp_temp * volt_temp) * 5) / 10000;
+  //Serial.println(temp.Effect);
+  temp.Effect_Hour = (temp.Effect / ((3.6) / Sample_Speed));
+  //Serial.println(temp.Effect_Hour);
+  //1000 bigger than what it really is
+  effect_temp = temp.Effect_Hour;
 
-    //info print
-    Serial.print("Emulated effect: ");
-    Serial.print(effect_temp/1000, 3);
-    Serial.print(" Wh at :");
-    Serial.println(temp.Time_Stamp);
-
-    return temp;
+  //info print
+  /*Serial.print("Emulated effect: ");
+  Serial.print(effect_temp / 1000, 3);
+  Serial.print(" Wh at :");
+  Serial.println(temp.Time_Stamp);
+*/
+  return temp;
 
 }
 
@@ -138,17 +139,17 @@ void loop() {
       // If a write fails, check connectivity to the mesh network
       if ( ! mesh.checkConnection() ) {
         //refresh the network address
-        Serial.println("Renewing Address");
+  //      Serial.println("Renewing Address");
         mesh.renewAddress();
-      } else {
-        Serial.println("Send fail, Test OK");
-      }
-    } else {
-      Serial.print("Send OK: "); Serial.println(displayTimer);
-    }
+      } //else {
+        //Serial.println("Send fail, Test OK");
+      //}
+    } //else {
+      //Serial.print("Send OK: "); Serial.println(displayTimer);
+    //}
   }
 
-  while (network.available()) {
+  /*while (network.available()) {
     RF24NetworkHeader header;
     payload_t payload;
     network.read(header, &payload, sizeof(payload));
@@ -156,5 +157,5 @@ void loop() {
     Serial.print(payload.counter);
     Serial.print(" at ");
     Serial.println(payload.ms);
-  }
+  }*/
 }
