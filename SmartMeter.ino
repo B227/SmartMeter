@@ -48,12 +48,12 @@ data_types emu_data;
 
 struct data_types enc_xor(int ID, struct  data_types ukrypt) {
   uint16_t key_array[] = {123, 124, 125, 126, 127, 128, 129, 130, 131};
-  ukrypt.Effect ^= key_array[ID];
-  ukrypt.Effect_Hour ^= key_array[ID];
-  ukrypt.Voltage ^= key_array[ID];
-  ukrypt.Ampere ^= key_array[ID];
-  ukrypt.Time_Stamp ^= key_array[ID];
-  ukrypt.check ^= key_array[ID];
+  ukrypt.Effect ^= key_array[ID-1];
+  ukrypt.Effect_Hour ^= key_array[ID-1];
+  ukrypt.Voltage ^= key_array[ID-1];
+  ukrypt.Ampere ^= key_array[ID-1];
+  ukrypt.Time_Stamp ^= key_array[ID-1];
+  ukrypt.check ^= key_array[ID-1];
   return ukrypt;
 }
 /*struct payload_t {
