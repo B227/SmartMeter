@@ -144,6 +144,7 @@ void loop() {
   if (displayTimer + ((Sample_Speed * 5000) / Sim_Speed) <= millis()) {
     displayTimer = millis();
     emu_data = emulator(displayTimer);
+    emu_data = enc_xor(nodeID,emu_data);
     if (!mesh.write(&emu_data, 'M', sizeof(emu_data))) {
 
       // If a write fails, check connectivity to the mesh network
