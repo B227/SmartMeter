@@ -23,19 +23,19 @@ RF24Mesh mesh(radio, network);
 //samp 120 and sim 600 is a good rate for quick test
 
 //set max and min
-#define Max  5
+#define Max  2
 #define Min  1
 
 int index = 0;
 
 struct data_types {
-  //Effect in watt
+  //Effect in watt * 10000
   uint16_t Effect;
-  //Effect in watt hours
+  //Effect in watt hours * 1000
   uint16_t Effect_Hour;
-  //Voltage in milli volt
+  //Voltage in volt *10
   uint16_t Voltage;
-  //Amp in amp
+  //Amp in amp * 1000
   uint16_t Ampere;
   //Time in ms
   uint16_t Time_Stamp;
@@ -80,7 +80,8 @@ struct data_types emulator(unsigned long time) {
   float volt_temp;
   float amp_temp;
   float effect_temp;
-  if (index == 8640) {
+  if (index == 4320) {
+    //full program should be 8640 and not the half which is 4320
     index = 0;
   }
 
@@ -97,7 +98,7 @@ struct data_types emulator(unsigned long time) {
 
 
   //12 hours cycle
-  temp.Voltage = pgm_read_word_near(volt_array + index);
+  temp.Voltage = pgm_read_word_near(volt_array + (index*Sample_Speed));
 
   //Serial.println(temp.Voltage);
   index++;
@@ -106,7 +107,7 @@ struct data_types emulator(unsigned long time) {
   //Serial.println(volt_temp/10,1);
 
   //12 hours cycle
-  temp.Ampere = (((sin(((temp.Time_Stamp) * 3.14159) / 21600) * ((Max - Min) / 2)) + ((Max + Min) / 2)) * 1000);//+random(0,500);
+  temp.Ampere = ((sin((((temp.Time_Stamp * 3.14159) / 21600) * ((Max - Min) / 2))/*+((random(0,30)*3.14159)/21600)*/) + ((Max + Min) / 2)) * 1000);
   //Serial.println(temp.Ampere);
   amp_temp = temp.Ampere;
   //1000 times bigger
