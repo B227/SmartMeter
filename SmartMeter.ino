@@ -28,7 +28,7 @@ RF24Mesh mesh(radio, network);
 
 int index = 0;
 
-struct data_types {
+struct data_types { 
   //Effect in watt
   uint16_t Effect;
   //Effect in watt hours
@@ -70,7 +70,7 @@ void setup() {
   // Set the nodeID manually
   mesh.setNodeID(nodeID);
   // Connect to the mesh
-  //Serial.println(F("Connecting to the mesh..."));
+  Serial.println(F("Connecting to the mesh..."));
   mesh.begin();
 
   /*Serial.print("Sample rate at: ");
