@@ -29,7 +29,7 @@ RF24Mesh mesh(radio, network);
 int index = 0;
 
 struct data_types {
-  //Effect in watt * 10000
+  //Effect in watt * 1000
   uint16_t Effect;
   //Effect in watt hours * 1000
   uint16_t Effect_Hour;
@@ -113,9 +113,9 @@ struct data_types emulator(unsigned long time) {
   //1000 times bigger
 
   //effects
-  temp.Effect = ((amp_temp * volt_temp) * 5) / 10000;
+  temp.Effect = ((amp_temp * volt_temp) * 5) / 1000;
   //Serial.println(temp.Effect);
-  temp.Effect_Hour = (temp.Effect / ((3.6) / Sample_Speed));
+  temp.Effect_Hour = (temp.Effect / ((36) / Sample_Speed));
   //Serial.println(temp.Effect_Hour);
   //1000 bigger than what it really is
   effect_temp = temp.Effect_Hour;
