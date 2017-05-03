@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include <avr/pgmspace.h>
 #include "voltage.h"
 #include "RF24.h"
