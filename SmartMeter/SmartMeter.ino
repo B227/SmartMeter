@@ -140,13 +140,29 @@ struct data_types emulator(unsigned long time) {
         return temp;
 
 }
-
+void printstruct(struct data_types ptvl){
+  Serial.print("Effect:      ");Serial.println(ptvl.Effect);
+  Serial.print("Effect Hour: ");Serial.println(ptvl.Effect_Hour);
+  Serial.print("Voltage:     ");Serial.println(ptvl.Voltage);
+  Serial.print("Ampere:      ");Serial.println(ptvl.Ampere);
+  Serial.print("Time Stamp:  ");Serial.println(ptvl.Time_Stamp);
+  Serial.print("ID:          ");Serial.println(ptvl.id);
+  Serial.print("Check:       ");Serial.println(ptvl.check);
+}
 void loop() {
         mesh.update();
         if (displayTimer + ((Sample_Speed * 5000) / Sim_Speed) <= millis()) {
                 displayTimer = millis();
                 emu_data = emulator(displayTimer);
-                emu_data = enc_xor(nodeID,emu_data);
+                static int i = 0;
+                Serial.print("Run through: ");Serial.println(i+1);
+                printstruct(emu_data);
+                i++;
+                if(i=100){
+                  while(1);
+                }
+
+                /*emu_data = enc_xor(nodeID,emu_data);
                 if (!mesh.write(&emu_data, 'M', sizeof(emu_data))) {
 
                         // If a write fails, check connectivity to the mesh network
@@ -157,7 +173,7 @@ void loop() {
                         } //else {
                           //Serial.println("Send fail, Test OK");
                           //}
-                } //else {
+                */} //else {
                   //Serial.print("Send OK: "); Serial.println(displayTimer);
                   //}
         }
