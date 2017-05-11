@@ -31,32 +31,32 @@ RF24Mesh mesh(radio, network);
 int index = 0;
 
 struct data_types {
-  //Effect in watt
-  uint16_t Effect;
-  //Effect in watt hours
-  uint16_t Effect_Hour;
-  //Voltage in milli volt
-  uint16_t Voltage;
-  //Amp in amp
-  uint16_t Ampere;
-  //Time in ms
-  uint16_t Time_Stamp;
-  //Smart Meter ID
-  uint8_t ID = nodeID;
-  //Safty check
-  uint8_t check = 29;
+        //Effect in watt
+        uint16_t Effect;
+        //Effect in watt hours
+        uint16_t Effect_Hour;
+        //Voltage in milli volt
+        uint16_t Voltage;
+        //Amp in amp
+        uint16_t Ampere;
+        //Time in ms
+        uint16_t Time_Stamp;
+        //Smart Meter ID
+        uint8_t ID = nodeID;
+        //Safty check
+        uint8_t check = 29;
 };
 data_types emu_data;
 
 struct data_types enc_xor(int ID, struct  data_types ukrypt) {
-  uint16_t key_array[] = {123, 124, 125, 126, 127, 128, 129, 130, 131};
-  ukrypt.Effect ^= key_array[ID - 1];
-  ukrypt.Effect_Hour ^= key_array[ID - 1];
-  ukrypt.Voltage ^= key_array[ID - 1];
-  ukrypt.Ampere ^= key_array[ID - 1];
-  ukrypt.Time_Stamp ^= key_array[ID - 1];
-  ukrypt.check ^= key_array[ID - 1];
-  return ukrypt;
+        uint16_t key_array[] = {123, 124, 125, 126, 127, 128, 129, 130, 131};
+        ukrypt.Effect ^= key_array[ID - 1];
+        ukrypt.Effect_Hour ^= key_array[ID - 1];
+        ukrypt.Voltage ^= key_array[ID - 1];
+        ukrypt.Ampere ^= key_array[ID - 1];
+        ukrypt.Time_Stamp ^= key_array[ID - 1];
+        ukrypt.check ^= key_array[ID - 1];
+        return ukrypt;
 }
 /*struct payload_t {
    unsigned long ms;
@@ -64,121 +64,125 @@ struct data_types enc_xor(int ID, struct  data_types ukrypt) {
    };*/
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
+        // put your setup code here, to run once:
+        Serial.begin(9600);
 
-  //Random seed for true random
-  randomSeed(analogRead(0));
-  // Set the nodeID manually
-  mesh.setNodeID(nodeID);
-  // Connect to the mesh
-  //Serial.println(F("Connecting to the mesh..."));
-  //mesh.begin();
+        //Random seed for true random
+        randomSeed(analogRead(0));
+        // Set the nodeID manually
+        mesh.setNodeID(nodeID);
+        // Connect to the mesh
+        //Serial.println(F("Connecting to the mesh..."));
+        mesh.begin();
 
-  /*Serial.print("Sample rate at: ");
-     Serial.println(Sample_Speed);
-     Serial.print("Simulator speed at: ");
-     Serial.println(Sim_Speed);
-     Serial.print("Minimum at: ");
-     Serial.println(Min);
-     Serial.print("Maximum at: ");
-     Serial.println(Max);
-  */
+        /*Serial.print("Sample rate at: ");
+           Serial.println(Sample_Speed);
+           Serial.print("Simulator speed at: ");
+           Serial.println(Sim_Speed);
+           Serial.print("Minimum at: ");
+           Serial.println(Min);
+           Serial.print("Maximum at: ");
+           Serial.println(Max);
+         */
 }
 
 
 
 struct data_types emulator(unsigned long time) {
-  float volt_temp;
-  float amp_temp;
-  float effect_temp;
-  if (index == 8640) {
-    index = 0;
-  }
+        float volt_temp;
+        float amp_temp;
+        float effect_temp;
+        if (index == 8640) {
+                index = 0;
+        }
 
-  //for calcs
-  data_types temp;
-  //for database comp
+        //for calcs
+        data_types temp;
+        //for database comp
 
-  //real life time stamps not affected by sim speed
-  //Serial.print("Sample at: ");
-  //Serial.println(time / 1000);
+        //real life time stamps not affected by sim speed
+        //Serial.print("Sample at: ");
+        //Serial.println(time / 1000);
 
-  //save time
-  temp.Time_Stamp = (time * Sim_Speed) / 1000;
+        //save time
+        temp.Time_Stamp = (time * Sim_Speed) / 1000;
 
 
-  //12 hours cycle
-  temp.Voltage = pgm_read_word_near(volt_array + index);
+        //12 hours cycle
+        temp.Voltage = pgm_read_word_near(volt_array + index);
 
-  //Serial.println(temp.Voltage);
-  index++;
-  volt_temp = temp.Voltage;
-  //10 times bigger
-  //Serial.println(volt_temp/10,1);
+        //Serial.println(temp.Voltage);
+        index++;
+        volt_temp = temp.Voltage;
+        //10 times bigger
+        //Serial.println(volt_temp/10,1);
 
-  //12 hours cycle
-  temp.Ampere = (((sin(((temp.Time_Stamp) * 3.14159) / 21600) * ((Max - Min) / 2)) + ((Max + Min) / 2)) * 1000);//+random(0,500);
-  //Serial.println(temp.Ampere);
-  amp_temp = temp.Ampere;
-  //1000 times bigger
+        //12 hours cycle
+        temp.Ampere = (((sin(((temp.Time_Stamp) * 3.14159) / 21600) * ((Max - Min) / 2)) + ((Max + Min) / 2)) * 1000);//+random(0,500);
+        //Serial.println(temp.Ampere);
+        amp_temp = temp.Ampere;
+        //1000 times bigger
 
-  //effects
-  temp.Effect = ((amp_temp * volt_temp)) / 10000;
-  //Serial.println(temp.Effect);
-  temp.Effect_Hour = ((temp.Effect * 5)/ ((3.6) / Sample_Speed));
-  //Serial.println(temp.Effect_Hour);
-  //1000 bigger than what it really is
-  effect_temp = temp.Effect_Hour;
+        //effects
+        temp.Effect = ((amp_temp * volt_temp)) / 10000;
+        //Serial.println(temp.Effect);
+        temp.Effect_Hour = ((temp.Effect * 5)/ ((3.6) / Sample_Speed));
+        //Serial.println(temp.Effect_Hour);
+        //1000 bigger than what it really is
+        effect_temp = temp.Effect_Hour;
 
-  //info print
-  /*Serial.print("Emulated effect: ");
-     Serial.print(effect_temp / 1000, 3);
-     Serial.print(" Wh at :");
-     Serial.println(temp.Time_Stamp);
-  */
-  return temp;
+        //info print
+        /*Serial.print("Emulated effect: ");
+           Serial.print(effect_temp / 1000, 3);
+           Serial.print(" Wh at :");
+           Serial.println(temp.Time_Stamp);
+         */
+        return temp;
 
 }
 void printstruct(struct data_types ptvl) {
-  Serial.print("Effect:      "); Serial.println(ptvl.Effect);
-  Serial.print("Effect Hour: "); Serial.println(ptvl.Effect_Hour);
-  Serial.print("Voltage:     "); Serial.println(ptvl.Voltage);
-  Serial.print("Ampere:      "); Serial.println(ptvl.Ampere);
-  Serial.print("Time Stamp:  "); Serial.println(ptvl.Time_Stamp);
-  Serial.print("ID:          "); Serial.println(ptvl.ID);
-  Serial.print("Check:       "); Serial.println(ptvl.check);
+        Serial.print("Effect:      "); Serial.println(ptvl.Effect);
+        Serial.print("Effect Hour: "); Serial.println(ptvl.Effect_Hour);
+        Serial.print("Voltage:     "); Serial.println(ptvl.Voltage);
+        Serial.print("Ampere:      "); Serial.println(ptvl.Ampere);
+        Serial.print("Time Stamp:  "); Serial.println(ptvl.Time_Stamp);
+        Serial.print("ID:          "); Serial.println(ptvl.ID);
+        Serial.print("Check:       "); Serial.println(ptvl.check);
 }
 void loop() {
-  //mesh.update();
-  if (displayTimer + ((Sample_Speed * 5000) / Sim_Speed) <= millis()) {
-    displayTimer = millis();
-    emu_data = emulator(displayTimer);
-    static int i = 0;
-    Serial.print("Run through: "); Serial.println(i + 1);
-    printstruct(emu_data);
-    i++;
-    if (i == 100) {
-      Serial.println("end");
-      while (1);
-    }
+        mesh.update();
+        if (displayTimer + ((Sample_Speed * 1000) / Sim_Speed) <= millis()) {
+                displayTimer = millis();
+                emu_data = emulator(displayTimer);
+                static int i = 0;
+                Serial.print("Run through: "); Serial.println(i + 1);
+                printstruct(emu_data);Serial.println("");
 
-    /*emu_data = enc_xor(nodeID,emu_data);
-      if (!mesh.write(&emu_data, 'M', sizeof(emu_data))) {
 
-            // If a write fails, check connectivity to the mesh network
-            if ( !mesh.checkConnection() ) {
-                    //refresh the network address
-                    //      Serial.println("Renewing Address");
-                    mesh.renewAddress();
-            } //else {
-              //Serial.println("Send fail, Test OK");
-              //}
-    */
-  } //else {
-  //Serial.print("Send OK: "); Serial.println(displayTimer);
-  //}
-}
+                emu_data = enc_xor(nodeID,emu_data);
+                Serial.println("Encrypted data:");
+                printstruct(emu_data);Serial.println("---------------------");
+                Serial.println("");
+                if (!mesh.write(&emu_data, 'M', sizeof(emu_data))) {
+
+                        // If a write fails, check connectivity to the mesh network
+                        if ( !mesh.checkConnection() ) {
+                                //refresh the network address
+                                //      Serial.println("Renewing Address");
+                                mesh.renewAddress();
+                        } //else {
+                          //Serial.println("Send fail, Test OK");
+                          //}
+
+                } //else {
+                  //Serial.print("Send OK: "); Serial.println(displayTimer);
+                  //}
+                i++;
+                if (i == 100) {
+                        Serial.println("end");
+                        while (1) ;
+                }
+        }
 
 /*while (network.available()) {
    RF24NetworkHeader header;
@@ -189,4 +193,4 @@ void loop() {
    Serial.print(" at ");
    Serial.println(payload.ms);
    }*/
-//}
+}
